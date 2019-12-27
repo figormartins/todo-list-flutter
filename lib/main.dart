@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(
@@ -17,6 +18,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List _todoList = [];
+  TextEditingController _todoController = TextEditingController();
+
+  void _addToDo() {
+    Map<String, dynamic> newToDo = Map<String, dynamic>();
+
+    setState(() {
+      newToDo["title"] = _todoController.text;
+      newToDo["isChecked"] = false;
+      _todoController.text = "";
+      _todoList.add(newToDo);
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +48,7 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    controller: _todoController,
                     decoration: InputDecoration(
                       labelText: "Nova Tarefa",
                       labelStyle: TextStyle(
@@ -47,11 +62,37 @@ class _HomeState extends State<Home> {
                   color: Colors.blueAccent,
                   child: Text("Add"),
                   textColor: Colors.white,
-                  onPressed: () {},
+                  onPressed: _addToDo
                 )
               ],
             ),
-          )
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.only(top: 5.0),
+              itemCount: _todoList.length,
+              itemBuilder: (context, index) {
+                return CheckboxListTile(
+                  title: Text(_todoList[index]["title"]),
+                  value: _todoList[index]["isChecked"],
+                  secondary: CircleAvatar(
+                    backgroundColor: Colors.white12,
+                    child: Icon(
+                      _todoList[index]["isChecked"]
+                          ? Icons.check
+                          : Icons.hdr_weak,
+                    ),
+                  ),
+                  onChanged: (isChecked) {
+                    print(isChecked);
+                    setState(() {
+                      _todoList[index]["isChecked"] = isChecked;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
