@@ -33,9 +33,8 @@ class _HomeState extends State<Home> {
   }
 
   void _addToDo() {
-    Map<String, dynamic> newToDo = Map<String, dynamic>();
-
     setState(() {
+      Map<String, dynamic> newToDo = Map<String, dynamic>();
       newToDo["title"] = _todoController.text;
       newToDo["isChecked"] = false;
       _todoController.text = "";
@@ -91,10 +90,11 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 RaisedButton(
-                    color: Colors.blueAccent,
-                    child: Text("Add"),
-                    textColor: Colors.white,
-                    onPressed: _addToDo)
+                  color: Colors.blueAccent,
+                  child: Text("Add"),
+                  textColor: Colors.white,
+                  onPressed: _addToDo,
+                )
               ],
             ),
           ),
@@ -115,7 +115,7 @@ class _HomeState extends State<Home> {
 
   Widget buildItem(context, index) {
     return Dismissible(
-      key: Key(index.toString()),
+      key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
       background: Container(
         color: Colors.redAccent[400],
         child: Align(
@@ -145,11 +145,11 @@ class _HomeState extends State<Home> {
         },
       ),
       onDismissed: (direction) {
-        setState(() async {
+        setState(() {
           _lastRemoved = Map.from(_todoList[index]);
           _lastRemovedPos = index;
           _todoList.removeAt(index);
-          await _saveData();
+          _saveData();
 
           final snack = SnackBar(
             content: Text("Tarefa ${_lastRemoved["title"]} removida"),
